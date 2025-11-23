@@ -1,6 +1,6 @@
-# selfpatch
+# 🤖 selfpatch
 
-**Open infrastructure for self-healing robots and software-defined machines.**
+**✨ Open infrastructure for self-healing robots and software-defined machines.**
 
 selfpatch is an open, practical attempt to build the missing “nervous system” for robots and SDVs:  
 diagnostics, introspection, and update flows that are good enough for humans *and* for AI agents to reason about.
@@ -9,7 +9,7 @@ This GitHub organization hosts the open-source core and experiments around that 
 
 ---
 
-## Vision
+## 🎯 Vision
 
 Modern robots and SDVs run on complex stacks:
 
@@ -40,28 +40,28 @@ Yet diagnostics and updates are often:
 
 ---
 
-## Projects
+## 🚀 Projects
 
 > 🚧 Everything here is early-stage and evolving. APIs and layouts may change.
 
-### `ros2_medkit` (work in progress)
+### [`ros2_medkit`](https://github.com/selfpatch/ros2_medkit) 🔧
 
 **Goal:** A ROS 2–native diagnostics and introspection layer that can act as a foundation for self-healing.
 
-Planned capabilities include:
+Key capabilities:
 
-- Discovery of nodes, components, and apps as a diagnostic tree
-- Exposure of relevant state and configuration via a clean API
-- Compatibility with SOVD concepts (Areas, Components, Functions, Apps)
-- A bridge between ROS 2 introspection and higher-level tools / cloud services
+- 🔍 **Discovery** of nodes, components, and apps as a diagnostic tree
+- 📊 **Exposure** of relevant state and configuration via a clean API
+- 🔌 **Compatibility** with SOVD concepts (Areas, Components, Functions, Apps)
+- 🌉 **Bridge** between ROS 2 introspection and higher-level tools / cloud services
 
-Repository: _coming soon under this organization_
+**Repository:** [github.com/selfpatch/ros2_medkit](https://github.com/selfpatch/ros2_medkit) ⭐
 
 More projects will be added as the ecosystem grows.
 
 ---
 
-## Who is this for?
+## 👥 Who is this for?
 
 - **Robotics teams using ROS 2** who need better remote diagnostics and update workflows  
 - **SDV / mobility engineers** looking to modernize diagnostics without rewriting everything  
@@ -73,7 +73,7 @@ you’re in the right place.
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
 Right now, the main focus is on:
 
@@ -90,7 +90,7 @@ You can help by:
 
 ---
 
-## Contact & updates
+## 📬 Contact & updates
 
 For now, the best way to follow the project and reach out is:
 
