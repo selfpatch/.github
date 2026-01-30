@@ -46,8 +46,8 @@ Yet diagnostics and updates are often:
 |------------|-------------|--------|
 | [ros2_medkit](https://github.com/selfpatch/ros2_medkit) | SOVD-compatible REST gateway for ROS 2 diagnostics | [![CI](https://github.com/selfpatch/ros2_medkit/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/ros2_medkit/actions/workflows/ci.yml) |
 | [sovd_web_ui](https://github.com/selfpatch/sovd_web_ui) | React web UI for browsing SOVD entity trees | [![CI](https://github.com/selfpatch/sovd_web_ui/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/sovd_web_ui/actions/workflows/ci.yml) |
-| [ros2_medkit_mcp](https://github.com/selfpatch/ros2_medkit_mcp) | Model Context Protocol server for AI agent integration | 🚧 In Progress |
-| [selfpatch_demos](https://github.com/selfpatch/selfpatch_demos) | Demo integrations (TurtleBot3, Nav2) | [![CI](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml) |
+| [ros2_medkit_mcp](https://github.com/selfpatch/ros2_medkit_mcp) | Model Context Protocol server for AI agent integration | [![CI](https://github.com/selfpatch/ros2_medkit_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/ros2_medkit_mcp/actions/workflows/ci.yml) |
+| [selfpatch_demos](https://github.com/selfpatch/selfpatch_demos) | Demo integrations (TurtleBot3, Nav2, Sensor Diagnostics) | [![CI](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml) |
 
 ---
 
@@ -108,25 +108,33 @@ docker run -p 8080:80 ghcr.io/selfpatch/sovd_web_ui
 
 **Model Context Protocol (MCP) server** wrapping ros2_medkit REST API for LLM tool use.
 
-> 🔒 **Read-only by design** — safe for AI agents to explore without risk of modifying the system.
+**Features:**
+- 🔗 **Full ros2_medkit gateway coverage** — Discovery, data, operations, configurations, faults
+- 🚀 **Dual transport support** — stdio (Claude Desktop) and streamable-http
+- 🐳 **Docker support** — Ready-to-use container images on GHCR
+- 🔐 **Bearer token authentication** — Optional secure access
 
 Enables AI agents (Claude, GPT, etc.) to:
 - 🔍 Discover and query robot components
-- 📊 Read sensor data and system state
-- 📋 List available configurations and operations
-- 🔧 Diagnose and troubleshoot issues
+- 📊 Read and publish sensor data
+- ⚙️ Get and set ROS 2 parameters
+- 🎯 Execute services and actions
+- ⚠️ Monitor and clear faults
 
 ```bash
-# Start MCP server
+# Start MCP server (stdio)
 ROS2_MEDKIT_BASE_URL=http://localhost:8080/api/v1 poetry run ros2-medkit-mcp-stdio
+
+# Or HTTP transport
+poetry run ros2-medkit-mcp-http --host 0.0.0.0 --port 8765
 ```
 
-**Available Tools:**
-- `sovd_entities_list` — Discover areas and components
-- `sovd_component_data` — Read topic data
-- `sovd_list_operations` — List available services/actions
-- `sovd_list_configurations` — Get parameters
-- `sovd_faults_list` — List active faults
+**Tool Categories:**
+- **Discovery**: `sovd_entities_list`, `sovd_entities_get`, `sovd_version`, `sovd_area_components`
+- **Data Access**: `sovd_entity_data`, `sovd_entity_topic_data`, `sovd_publish_topic`
+- **Operations**: `sovd_list_operations`, `sovd_create_execution`, `sovd_get_execution`, `sovd_cancel_execution`
+- **Configuration**: `sovd_list_configurations`, `sovd_get_configuration`, `sovd_set_configuration`
+- **Faults**: `sovd_faults_list`, `sovd_faults_get`, `sovd_faults_clear`
 
 ---
 
@@ -137,13 +145,19 @@ ROS2_MEDKIT_BASE_URL=http://localhost:8080/api/v1 poetry run ros2-medkit-mcp-std
 **Available Demos:**
 | Demo | Description | Status |
 |------|-------------|--------|
-| [TurtleBot3 + Nav2](https://github.com/selfpatch/selfpatch_demos/tree/main/demos/turtlebot3_integration) | Mobile robot with navigation in Gazebo | 🚧 In Progress |
+| [Sensor Diagnostics](https://github.com/selfpatch/selfpatch_demos/tree/main/demos/sensor_diagnostics) | Lightweight sensor demo (no GPU required) | ✅ Ready |
+| [TurtleBot3 + Nav2](https://github.com/selfpatch/selfpatch_demos/tree/main/demos/turtlebot3_integration) | Full mobile robot with Nav2 navigation | ✅ Ready |
 
 ```bash
-# Run the TurtleBot3 demo
-cd demos/turtlebot3_integration
+# Sensor Diagnostics (fastest - no GPU)
+cd demos/sensor_diagnostics
 docker compose up
-# Open http://localhost:8080 for Web UI
+# Open http://localhost:3000 for Web UI
+
+# TurtleBot3 + Nav2 (full navigation stack)
+cd demos/turtlebot3_integration
+./run-demo.sh
+# Gazebo opens, Web UI at http://localhost:3000
 ```
 
 ---
