@@ -79,7 +79,7 @@ ros2 launch ros2_medkit_gateway gateway.launch.py
 curl http://localhost:8080/api/v1/areas
 ```
 
-📖 [Documentation](https://selfpatch.github.io/ros2_medkit/) • 💬 [Discord](https://discord.gg/fEbWKTah)
+📖 [Documentation](https://selfpatch.github.io/ros2_medkit/) • 💬 [Discord](https://discord.gg/6CXPMApAyq)
 
 ---
 
@@ -209,7 +209,7 @@ We're actively developing all repositories. You can help by:
 - 🐛 Opening issues with use-cases, pain points, and ideas
 - 💻 Contributing code, docs, or examples
 - 🤖 Testing with your own robots and sharing feedback
-- 💬 Joining discussions on [Discord](https://discord.gg/fEbWKTah)
+- 💬 Joining discussions on [Discord](https://discord.gg/6CXPMApAyq)
 
 See individual repository `CONTRIBUTING.md` files for guidelines.
 
@@ -217,7 +217,7 @@ See individual repository `CONTRIBUTING.md` files for guidelines.
 
 ## 📬 Contact & Community
 
-- **💬 Discord** — [Join our server](https://discord.gg/fEbWKTah) for discussions and support
+- **💬 Discord** — [Join our server](https://discord.gg/6CXPMApAyq) for discussions and support
 - **📖 Documentation** — [selfpatch.github.io/ros2_medkit](https://selfpatch.github.io/ros2_medkit/)
 - **🐛 Issues** — Open issues in individual repositories
 - **📢 Watch** — Star and watch this organization for updates
