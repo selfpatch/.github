@@ -1,226 +1,95 @@
-# 🤖 selfpatch
+# selfpatch
 
-**✨ Open infrastructure for self-healing robots and software-defined machines.**
+<p align="center">
+  <b>Self-healing diagnostics for ROS 2 and Physical AI.</b>
+</p>
 
-selfpatch is an open, practical attempt to build the missing "nervous system" for robots and SDVs:
-diagnostics, introspection, and update flows that are good enough for humans *and* for AI agents to reason about.
+<p align="center">
+  <img src="https://github.com/selfpatch/ros2_medkit/raw/main/hero-full-720-12fps.gif" alt="Robots break. Now you'll know why." width="720">
+</p>
 
-This GitHub organization hosts the open-source core and experiments around that idea.
+<p align="center">
+  📖 <a href="https://selfpatch.github.io/ros2_medkit/">Docs</a> · 💬 <a href="https://discord.gg/6CXPMApAyq">Discord</a>
+</p>
 
----
+selfpatch is the open-source core of a [SOVD](https://www.iso.org/standard/86384.html)-compliant diagnostics stack for robots and software-defined machines. A single REST gateway exposes the full ROS 2 graph - components, health, faults, parameters, operations, updates - in a shape that humans *and* AI agents can actually reason about.
 
-## 🎯 Vision
-
-Modern robots and SDVs run on complex stacks:
-
-- ROS 2 graphs, nodes, topics, actions
-- Mixed hardware (MCUs, ECUs, edge HPC, cloud)
-- Many protocols (DDS, Zenoh, WebSockets, Iceoryx, UDS, OPC UA, CAN/J1939, …)
-
-Yet diagnostics and updates are often:
-
-- Fragmented per vendor / per subsystem
-- Hard to introspect at runtime
-- Designed for humans clicking through tools, not for automation or AI
-
-**selfpatch** aims to change that by providing:
-
-1. **A modern diagnostic & introspection layer**
-   - Runtime discovery of components, apps, topics, health, configuration
-   - API-first approach: HTTP/REST + schemas instead of ad-hoc scripts
-
-2. **A foundation for safe self-healing flows**
-   - Clear, machine-readable model of the system
-   - Hooks for health checks, mitigation actions, and OTA-style updates
-   - Designed so that AI agents can *understand* and *justify* their actions
-
-3. **Bridges instead of rewrites**
-   - Integrations with existing ecosystems (ROS 2, UDS, SOVD, OPC UA, …)
-   - Evolution over revolution: start where your robots are today.
+> **SOVD** = ISO 17978, the modern successor to UDS: HTTP/JSON, schema-first, AI-friendly. selfpatch makes it native to ROS 2.
 
 ---
 
-## 🚀 Projects
+## Why selfpatch
 
-| Repository | Description | Status |
-|------------|-------------|--------|
-| [ros2_medkit](https://github.com/selfpatch/ros2_medkit) | SOVD-compatible REST gateway for ROS 2 diagnostics | [![CI](https://github.com/selfpatch/ros2_medkit/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/ros2_medkit/actions/workflows/ci.yml) |
-| [sovd_web_ui](https://github.com/selfpatch/sovd_web_ui) | React web UI for browsing SOVD entity trees | [![CI](https://github.com/selfpatch/sovd_web_ui/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/sovd_web_ui/actions/workflows/ci.yml) |
-| [ros2_medkit_mcp](https://github.com/selfpatch/ros2_medkit_mcp) | Model Context Protocol server for AI agent integration | [![CI](https://github.com/selfpatch/ros2_medkit_mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/ros2_medkit_mcp/actions/workflows/ci.yml) |
-| [selfpatch_demos](https://github.com/selfpatch/selfpatch_demos) | Demo integrations (TurtleBot3, Nav2, Sensor Diagnostics) | [![CI](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml/badge.svg)](https://github.com/selfpatch/selfpatch_demos/actions/workflows/ci.yml) |
+Diagnostics on modern robots and SDVs are fragmented, per-vendor, human-clickthrough - and mostly invisible to the AI agents operating the system. selfpatch changes that:
 
----
-
-### [`ros2_medkit`](https://github.com/selfpatch/ros2_medkit) — Core Gateway
-
-**Modern, SOVD-compatible diagnostics for ROS 2 robots** — C++17 gateway exposing the ROS 2 graph via REST API.
-
-**Entity Model (SOVD-aligned):**
-| Entity | Maps to | Example |
-|--------|---------|---------|
-| **Area** | ROS 2 namespace | `/powertrain`, `/navigation` |
-| **Component** | Logical grouping | `motor_controller`, `lidar_unit` |
-| **Function** | Capability | `localization`, `obstacle_detection` |
-| **App** | ROS 2 node | `/nav2/controller_server` |
-
-**Key Features:**
-- 🔍 **Runtime Discovery** — Automatically discovers running nodes, topics, services, actions
-- 🌐 **REST API** — HTTP endpoints for all entity types, data, operations, configurations
-- 📊 **Dynamic Serialization** — Read any ROS 2 message type at runtime (via dynmsg)
-- 📡 **Data Access** — Read or publish data over ROS 2 topics via HTTP
-- ⚙️ **Configuration** — Get/set ROS 2 parameters through REST
-- 🎯 **Operations** — Invoke services and send action goals via HTTP
-- ⚠️ **Fault Management** — Unified fault reporting with snapshots capturing system state at fault time
-- 📄 **Manifest Support** — Hybrid discovery with YAML manifests for static entity definitions
-
-```bash
-# Quick start
-ros2 launch ros2_medkit_gateway gateway.launch.py
-curl http://localhost:8080/api/v1/areas
-```
-
-📖 [Documentation](https://selfpatch.github.io/ros2_medkit/) • 💬 [Discord](https://discord.gg/6CXPMApAyq)
+- **One REST API** for the whole ROS 2 graph - no ad-hoc scripts per rig
+- **A machine-readable model** - AI agents can discover, explain, and act with justification
+- **Bridges over rewrites** - integrates with what your robots run today (ROS 2, SOVD, UDS, OPC UA, …)
 
 ---
 
-### [`sovd_web_ui`](https://github.com/selfpatch/sovd_web_ui) — Web Interface
+## Projects
 
-**Lightweight React SPA for browsing SOVD entity trees** — connects to ros2_medkit gateway and visualizes the diagnostic hierarchy.
+| Repository | What it is |
+|------------|------------|
+| [ros2_medkit](https://github.com/selfpatch/ros2_medkit) | C++17 SOVD gateway - the core REST server that fronts the ROS 2 graph |
+| [ros2_medkit_web_ui](https://github.com/selfpatch/ros2_medkit_web_ui) | React 19 entity browser with inline parameter and operation control |
+| [ros2_medkit_mcp](https://github.com/selfpatch/ros2_medkit_mcp) | Model Context Protocol server - 47 tools that let Claude, GPT & co. diagnose robots |
+| [ros2_medkit_foxglove_extension](https://github.com/selfpatch/ros2_medkit_foxglove_extension) | Foxglove Studio panels - entity browser and live fault dashboard |
+| [ros2_medkit_clients](https://github.com/selfpatch/ros2_medkit_clients) | Typed TypeScript and Python clients generated from the OpenAPI spec |
+| [selfpatch_demos](https://github.com/selfpatch/selfpatch_demos) | `docker compose up` demos with TurtleBot3 + Nav2 and a sensor-diagnostics rig |
 
-**Tech Stack:** React 19 + TypeScript + Vite + TailwindCSS + shadcn/ui + Zustand
+---
 
-**Features:**
-- 🌳 **Entity Tree Browser** — Hierarchical navigation with lazy-loading
-- 📂 **Virtual Folders** — `data/`, `operations/`, `configurations/` per entity
-- 📊 **Topic Viewer** — Real-time data display with QoS information
-- ⚙️ **Parameter Editor** — View and modify ROS 2 parameters
-- 🎯 **Operation Invoker** — Call services and send action goals from the UI
+## Architecture
 
-```bash
-# Quick start
-docker run -p 8080:80 ghcr.io/selfpatch/sovd_web_ui
-# Then connect to your ros2_medkit gateway URL
+```mermaid
+flowchart TB
+    subgraph clients["Clients"]
+        WebUI["ros2_medkit_web_ui<br/><sub>React SPA</sub>"]
+        MCP["ros2_medkit_mcp<br/><sub>MCP server for LLMs</sub>"]
+        Foxglove["foxglove_extension<br/><sub>Foxglove Studio panels</sub>"]
+        Libs["ros2_medkit_clients<br/><sub>TypeScript / Python libs</sub>"]
+    end
+
+    Gateway["ros2_medkit_gateway<br/><sub>C++ ROS 2 node</sub>"]
+
+    subgraph ros2["ROS 2 System"]
+        Nodes["nodes · topics · services<br/>actions · parameters · faults"]
+    end
+
+    WebUI -- "HTTP / REST" --> Gateway
+    MCP -- "HTTP / REST" --> Gateway
+    Foxglove -- "HTTP / REST" --> Gateway
+    Libs -. "typed SDK" .-> Gateway
+    Gateway -- "ROS 2 APIs" --> Nodes
+
+    classDef client fill:#eef3ff,stroke:#4a6bd8,color:#1a2a4a;
+    classDef gateway fill:#fff4e0,stroke:#d88a1a,color:#4a2a05,font-weight:bold;
+    classDef ros fill:#e9f7ee,stroke:#2a9d5d,color:#0d3a1d;
+    class WebUI,MCP,Foxglove,Libs client;
+    class Gateway gateway;
+    class Nodes ros;
 ```
 
 ---
 
-### [`ros2_medkit_mcp`](https://github.com/selfpatch/ros2_medkit_mcp) — AI Agent Integration
+## Who it's for
 
-**Model Context Protocol (MCP) server** wrapping ros2_medkit REST API for LLM tool use.
+- **Robotics teams on ROS 2** that need better remote diagnostics and observability
+- **SDV and mobility engineers** modernizing diagnostics without rewriting the stack
+- **AI/ML teams** building autonomous diagnostics and remediation with LLMs
+- **Platform teams** wiring up monitoring, OTA, and AI-driven operations
 
-**Features:**
-- 🔗 **Full ros2_medkit gateway coverage** — Discovery, data, operations, configurations, faults
-- 🚀 **Dual transport support** — stdio (Claude Desktop) and streamable-http
-- 🐳 **Docker support** — Ready-to-use container images on GHCR
-- 🔐 **Bearer token authentication** — Optional secure access
-
-Enables AI agents (Claude, GPT, etc.) to:
-- 🔍 Discover and query robot components
-- 📊 Read and publish sensor data
-- ⚙️ Get and set ROS 2 parameters
-- 🎯 Execute services and actions
-- ⚠️ Monitor and clear faults
-
-```bash
-# Start MCP server (stdio)
-ROS2_MEDKIT_BASE_URL=http://localhost:8080/api/v1 poetry run ros2-medkit-mcp-stdio
-
-# Or HTTP transport
-poetry run ros2-medkit-mcp-http --host 0.0.0.0 --port 8765
-```
-
-**Tool Categories:**
-- **Discovery**: `sovd_entities_list`, `sovd_entities_get`, `sovd_version`, `sovd_area_components`
-- **Data Access**: `sovd_entity_data`, `sovd_entity_topic_data`, `sovd_publish_topic`
-- **Operations**: `sovd_list_operations`, `sovd_create_execution`, `sovd_get_execution`, `sovd_cancel_execution`
-- **Configuration**: `sovd_list_configurations`, `sovd_get_configuration`, `sovd_set_configuration`
-- **Faults**: `sovd_faults_list`, `sovd_faults_get`, `sovd_faults_clear`
+If you've ever thought *"we can't safely automate fixes because we don't really understand what's running where"* - you're in the right place.
 
 ---
 
-### [`selfpatch_demos`](https://github.com/selfpatch/selfpatch_demos) — Demo Integrations
+## Get involved
 
-**Real-world demonstrations** of ros2_medkit with ROS 2 robots.
+- **Try the 5-minute demo** → [`selfpatch_demos`](https://github.com/selfpatch/selfpatch_demos)
+- **Share a pain point** from your fleet in an [issue](https://github.com/selfpatch/ros2_medkit/issues) or on [Discord](https://discord.gg/6CXPMApAyq)
+- **Write a plugin** - the gateway and MCP server both expose plugin interfaces
+- **Star the repos you care about** - it helps us prioritize
 
-**Available Demos:**
-| Demo | Description | Status |
-|------|-------------|--------|
-| [Sensor Diagnostics](https://github.com/selfpatch/selfpatch_demos/tree/main/demos/sensor_diagnostics) | Lightweight sensor demo (no GPU required) | ✅ Ready |
-| [TurtleBot3 + Nav2](https://github.com/selfpatch/selfpatch_demos/tree/main/demos/turtlebot3_integration) | Full mobile robot with Nav2 navigation | ✅ Ready |
-
-```bash
-# Sensor Diagnostics (fastest - no GPU)
-cd demos/sensor_diagnostics
-docker compose up
-# Open http://localhost:3000 for Web UI
-
-# TurtleBot3 + Nav2 (full navigation stack)
-cd demos/turtlebot3_integration
-./run-demo.sh
-# Gazebo opens, Web UI at http://localhost:3000
-```
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────┐                   ┌─────────────────┐
-│  sovd_web_ui    │                   │ ros2_medkit_mcp │
-│  (React SPA)    │                   │ (MCP for LLMs)  │
-└────────┬────────┘                   └────────┬────────┘
-         │ HTTP/REST                           │ HTTP/REST
-         │ /api/v1/...                         │ /api/v1/...
-         └──────────────┐     ┌────────────────┘
-                        ▼     ▼
-               ┌─────────────────────┐
-               │ ros2_medkit_gateway │
-               │  (C++ ROS 2 node)   │
-               └──────────┬──────────┘
-                          │ ROS 2 APIs
-               ┌──────────▼──────────┐
-               │    ROS 2 System     │
-               │ (nodes, topics,     │
-               │  services, actions, │
-               │  parameters, faults)│
-               └─────────────────────┘
-```
-
----
-
-## 👥 Who is this for?
-
-- **Robotics teams using ROS 2** who need better remote diagnostics and observability
-- **SDV / mobility engineers** looking to modernize diagnostics without rewriting everything
-- **AI/ML engineers** building autonomous diagnostics and remediation with LLMs
-- **Tooling & platform teams** building monitoring, OTA, or AI-driven operations
-- **Researchers & tinkerers** exploring self-healing, digital twins, and autonomous remediation
-
-If you've ever thought _"we can't safely automate fixes because we don't really understand what's running where"_,
-you're in the right place.
-
----
-
-## 🤝 Contributing
-
-We're actively developing all repositories. You can help by:
-
-- ⭐ Starring the repositories
-- 🐛 Opening issues with use-cases, pain points, and ideas
-- 💻 Contributing code, docs, or examples
-- 🤖 Testing with your own robots and sharing feedback
-- 💬 Joining discussions on [Discord](https://discord.gg/6CXPMApAyq)
-
-See individual repository `CONTRIBUTING.md` files for guidelines.
-
----
-
-## 📬 Contact & Community
-
-- **💬 Discord** — [Join our server](https://discord.gg/6CXPMApAyq) for discussions and support
-- **📖 Documentation** — [selfpatch.github.io/ros2_medkit](https://selfpatch.github.io/ros2_medkit/)
-- **🐛 Issues** — Open issues in individual repositories
-- **📢 Watch** — Star and watch this organization for updates
-
-If you're working on robots, SDV platforms, or tooling and this resonates,
-don't hesitate to reach out – collaboration is the whole point of this effort.
+Apache 2.0. See individual repository `CONTRIBUTING.md` files for guidelines.
