@@ -1,0 +1,340 @@
+<!doctype html>
+<!--
+  Every image on the org profile, drawn with the selfpatch.ai brand system
+  (website DESIGN.md): Oxanium bold headings, Inter body, chalk panels,
+  graphite and forest acts, acid only on the primary button.
+
+  render.mjs opens this page once per theme (?theme=light|dark) and saves each
+  [data-asset] element as profile/assets/<name>-<theme>.png. Elements marked
+  data-themes="dark" are theme-independent panels and render once, without a
+  theme suffix. data-format="webp" keeps the photo-heavy panels small.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>selfpatch profile assets</title>
+<style>
+  @font-face {
+    font-family: Oxanium;
+    font-weight: 200 800;
+    src: url("fonts/oxanium-latin.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: Inter;
+    font-weight: 100 900;
+    src: url("fonts/inter-latin.woff2") format("woff2");
+  }
+
+  /* Light: the site's white ground. Dark: the site's dark act. */
+  :root {
+    --ink: #121413;
+    --body: #363a37;
+    --muted: #5d645e;
+    --accent-text: #2f6b3f;
+    --surface: #eeeeea;
+    --line: rgb(18 20 19 / 0.1);
+    --line-strong: rgb(18 20 19 / 0.22);
+    --hero-ink: #0f3b24;
+  }
+  :root.dark {
+    --ink: #f4f5f1;
+    --body: #c9cdc4;
+    --muted: #a8b2a8;
+    --accent-text: #c8ff3e;
+    --surface: #1a1c1a;
+    --line: rgb(255 255 255 / 0.08);
+    --line-strong: rgb(255 255 255 / 0.16);
+    --hero-ink: #f4f5f1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: transparent; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    color: var(--body);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  h1, h2, h3, .display {
+    font-family: Oxanium, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  h1, h2 { letter-spacing: -0.04em; }
+  .eyebrow { font-size: 18px; line-height: 1.5; color: var(--muted); margin-bottom: 14px; }
+  .h2 { font-size: 46px; line-height: 1.08; }
+  .arrow-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-weight: 600; font-size: 16px; color: var(--accent-text);
+  }
+  .arrow-link svg { width: 17px; height: 17px; }
+
+  /* Full-width assets share one width; the profile shows them at 100% */
+  .wide { width: 800px; }
+  /* Section rhythm, baked into the image as clear space above the header */
+  .section { padding-top: 56px; }
+
+  /* Hero */
+  .hero h1 { font-size: 66px; line-height: 1.02; color: var(--hero-ink); margin-bottom: 36px; }
+  .hero img { display: block; width: 800px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 28px; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    height: 46px; padding: 0 22px; border-radius: 8px;
+    font-size: 16px; white-space: nowrap;
+  }
+  .btn-primary { background: #c8ff3e; color: #121413; font-weight: 600; padding: 0 26px; }
+  /* lucide ArrowRight, as on the website's plan buttons. Drawn, because the
+     bundled font subset has no U+2192 and a text arrow would fall back to
+     whatever the rendering machine has. */
+  .arrow {
+    width: 17px; height: 17px; flex: none; background: currentColor;
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2.25' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m12 5 7 7-7 7'/%3E%3C/svg%3E") center / contain no-repeat;
+  }
+  .btn-secondary { border: 1px solid var(--line-strong); color: var(--ink); font-weight: 500; }
+
+  /* Self-healing loop */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 34px; }
+  .stage { background: var(--surface); border-radius: 16px; padding: 30px; }
+  .stage svg { width: 30px; height: 30px; color: var(--ink); }
+  .stage h3 { font-size: 28px; line-height: 1.1; margin-top: 26px; }
+  .stage p { font-size: 18px; line-height: 1.6; margin-top: 10px; max-width: 30ch; }
+
+  /* The path: step 1 is free Medkit, step 2 is Medkit Pro. Both panels share
+     one structure, so they read as a pair: step line, product name, lead,
+     what you get, one button, and the plan drawing from the website. */
+  .sub { font-size: 19px; line-height: 1.6; margin-top: 18px; max-width: 54ch; }
+  .plan { border-radius: 20px; display: grid; grid-template-columns: 1fr 300px; gap: 24px; padding: 44px 40px 44px 48px; }
+  .plan .step { font-size: 16px; color: var(--muted); }
+  .plan .product { font-size: 50px; line-height: 1; margin-top: 14px; }
+  .plan .lead { font-size: 19px; line-height: 1.55; margin-top: 16px; max-width: 30ch; color: var(--ink); }
+  .checks { list-style: none; margin-top: 20px; display: grid; gap: 10px; }
+  .checks li { display: flex; gap: 10px; align-items: center; font-size: 17px; }
+  .checks svg { width: 20px; height: 20px; color: var(--accent-text); flex: none; }
+  .plan .actions { display: flex; align-items: center; gap: 18px; margin-top: 30px; }
+  .plan .btn-primary { height: 52px; padding: 0 28px; }
+  .plan .note { font-size: 15px; color: var(--muted); }
+  .plan .art { display: flex; align-items: flex-end; justify-content: center; }
+  .plan .art img { display: block; width: 100%; height: auto; }
+
+  .featured { background: var(--surface); margin-top: 34px; }
+
+  /* Works with Medkit: a plain list, one row image per repository, so each
+     row links on its own. GitHub leaves ~8px under every inline image, so the
+     bottom padding is that much shorter than the top. */
+  .list-head { padding-top: 44px; padding-bottom: 16px; }
+  .list-head h3 { font-size: 28px; line-height: 1.1; }
+  .list-head p { font-size: 17px; color: var(--muted); margin-top: 8px; }
+  .row { border-top: 1px solid var(--line-strong); padding: 18px 4px 10px 0; display: flex; align-items: center; gap: 24px; }
+  .row .text { flex: 1; }
+  .row h3 { font-size: 22px; line-height: 1.2; }
+  .row p { font-size: 17px; line-height: 1.5; margin-top: 3px; }
+  .row svg { width: 22px; height: 22px; color: var(--accent-text); flex: none; }
+
+  /* Step 2: Medkit Pro, in the forest act of the website's close band */
+  .pro {
+    background: linear-gradient(100deg, #0f3b24 0%, #123a25 45%, #101a12 100%);
+    --ink: #ffffff; --body: #d4e3d8; --muted: #93b39d; --accent-text: #c8ff3e;
+    grid-template-columns: 1fr 320px;
+  }
+  .pro .step { color: rgb(255 255 255 / 0.7); }
+
+  /* Values: the one dark act */
+  .values {
+    position: relative; overflow: hidden; border-radius: 20px;
+    background: #121413; padding: 52px 48px 48px;
+    --ink: #f4f5f1; --body: #c9cdc4; --muted: #a8b2a8; --accent-text: #c8ff3e;
+    --line: rgb(255 255 255 / 0.08);
+    display: grid; grid-template-columns: 5fr 7fr; gap: 40px;
+  }
+  .values .leaves {
+    position: absolute; left: 0; bottom: 0; width: 470px; aspect-ratio: 3 / 2;
+    background: url("images/values-leaves.webp") left bottom / contain no-repeat;
+    opacity: 0.2;
+  }
+  .values .left, .values .right { position: relative; }
+  .values .eyebrow { color: rgb(255 255 255 / 0.7); }
+  .values .arrow-link { margin-top: 30px; }
+  .values .items { display: grid; grid-template-columns: 1fr 1fr; column-gap: 36px; row-gap: 38px; padding-top: 6px; }
+  .values .items h3 { font-size: 25px; line-height: 1.1; }
+  .values .items p { font-size: 16px; line-height: 1.6; margin-top: 10px; }
+  .programs {
+    grid-column: 1 / -1; border-top: 1px solid var(--line); padding-top: 30px;
+    display: flex; flex-wrap: wrap; align-items: flex-end; column-gap: 32px; row-gap: 20px;
+  }
+  .programs li { list-style: none; display: flex; flex-direction: column; }
+  .programs .mark { height: 40px; display: flex; align-items: center; }
+  .programs .mark img { width: auto; }
+  .programs .nvidia { height: 52px; margin: 0 -6px; }
+  .programs .ros { height: 40px; }
+  .programs .mark p { font-size: 23px; line-height: 1; }
+  .programs .note { font-size: 14px; color: var(--muted); margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<!-- The claim, then the illustration framed below it, as on the homepage -->
+<section class="wide hero" data-asset="hero" data-format="webp">
+  <h1>Enabling robots<br>to fix themselves</h1>
+  <img src="images/hero-robots-illustrated.webp" alt="">
+</section>
+
+<a class="btn btn-primary" data-asset="btn-try" data-themes="dark">Try now <i class="arrow"></i></a>
+<a class="btn btn-secondary" data-asset="btn-docs">Docs</a>
+<a class="btn btn-secondary" data-asset="btn-discord">Discord</a>
+<a class="btn btn-secondary" data-asset="btn-website">selfpatch.ai</a>
+
+<section class="wide section" data-asset="loop">
+  <p class="eyebrow">How it works</p>
+  <h2 class="h2">Our self-healing loop</h2>
+  <div class="grid-2">
+    <div class="stage">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2v2"/><path d="M5 2v2"/><path d="M5 3H4a2 2 0 0 0-2 2v4a6 6 0 0 0 12 0V5a2 2 0 0 0-2-2h-1"/><path d="M8 15a6 6 0 0 0 12 0v-3"/><circle cx="20" cy="10" r="2"/></svg>
+      <h3>Diagnose</h3>
+      <p>A robot breaks. It knows what broke and why.</p>
+    </div>
+    <div class="stage">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z"/></svg>
+      <h3>Patch</h3>
+      <p>It picks a fix that worked before and installs it.</p>
+    </div>
+    <div class="stage">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5"/><path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27"/></svg>
+      <h3>Recover</h3>
+      <p>A quick self-check. If something is off, the change is undone.</p>
+    </div>
+    <div class="stage">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+      <h3>Continue</h3>
+      <p>Every fix is remembered, so next time is even faster.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Clear space above the panel, so the values open a new section on the profile -->
+<div class="wide" style="padding-top: 40px" data-asset="values" data-themes="dark" data-format="webp">
+<section class="wide values">
+  <div class="leaves"></div>
+  <div class="left">
+    <p class="eyebrow">Our values</p>
+    <h2 class="h2">Proof over promises.</h2>
+    <p class="arrow-link">Full security model <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg></p>
+  </div>
+  <div class="right">
+    <div class="items">
+      <div><h3>Apache 2.0</h3><p>An open core you can inspect and trust</p></div>
+      <div><h3>ISO 17978-3</h3><p>Built on the international SOVD standard</p></div>
+      <div><h3>On the device</h3><p>On-prem and air-gapped - no cloud required</p></div>
+      <div><h3>Any stack</h3><p>ROS 2 today, PLCs and ECUs through Pro bridges</p></div>
+    </div>
+  </div>
+  <ul class="programs">
+    <li><div class="mark"><img class="nvidia" src="images/nvidia-inception.svg" alt=""></div><p class="note">Partner</p></li>
+    <li><div class="mark"><img class="ros" src="images/ros2-white.png" alt=""></div><p class="note">Official ROS 2 distribution</p></li>
+    <li><div class="mark"><p class="display">ROSCon 2026</p></div><p class="note">Main-track speaker</p></li>
+  </ul>
+</section>
+</div>
+
+<!-- Step 1: where everyone starts -->
+<section class="wide section" data-asset="start">
+  <p class="eyebrow">Open core</p>
+  <h2 class="h2">Start with open source</h2>
+  <p class="sub">Medkit is free and open source. Put it on your first robots today, and move to Medkit Pro when you run a fleet.</p>
+  <div class="plan featured">
+    <div>
+      <p class="step">Step 1 · Open source</p>
+      <p class="product display">Medkit</p>
+      <p class="lead">Find out what broke on any ROS 2 robot, without SSH or one-off scripts.</p>
+      <ul class="checks" data-checks>
+        <li>Finds every ROS 2 node by itself</li>
+        <li>Faults, live data and settings in one place</li>
+        <li>One standard API for every robot</li>
+      </ul>
+      <div class="actions">
+        <span class="btn btn-primary">Install free <i class="arrow"></i></span>
+        <span class="note">ros2_medkit · Apache 2.0</span>
+      </div>
+    </div>
+    <div class="art"><img src="images/medkit.webp" alt=""></div>
+  </div>
+</section>
+
+<section class="wide list-head" data-asset="works-with">
+  <h3>Works with Medkit</h3>
+  <p>Free and open source, like Medkit.</p>
+</section>
+
+<!-- Rows are filled from COMPANIONS below, so the list lives in one place -->
+<div id="rows" style="display: contents"></div>
+
+<!-- Step 2: the upgrade, with clear space above so it opens its own section -->
+<div class="wide" style="padding-top: 40px" data-asset="pro" data-themes="dark" data-format="webp">
+  <section class="plan pro">
+    <div>
+      <p class="step">Step 2 · For fleets</p>
+      <p class="product display">Medkit Pro</p>
+      <p class="lead">Your whole fleet in one view. Faults come back with the fix.</p>
+      <ul class="checks" data-checks>
+        <li>Suggests the fix that worked before</li>
+        <li>Updates that roll themselves back</li>
+        <li>Robots and PLCs in one place</li>
+      </ul>
+      <div class="actions">
+        <span class="btn btn-primary">Book a pilot <i class="arrow"></i></span>
+        <span class="note">Runs on top of Medkit</span>
+      </div>
+    </div>
+    <div class="art"><img src="images/medkit-pro.webp" alt=""></div>
+  </section>
+</div>
+
+<script>
+  // Keep in step with the Works with Medkit list in profile/README.md
+  const COMPANIONS = [
+    { name: 'selfpatch_demos', body: 'Try Medkit on ready-made demo robots, from a mobile robot to a robot arm.' },
+    { name: 'ros2_medkit_web_ui', body: 'See every part of your robot and its status in the browser.' },
+    { name: 'ros2_medkit_mcp', body: 'Let an AI assistant look into your robots through Medkit.' },
+    { name: 'ros2_medkit_foxglove_extension', body: 'See live faults next to your robot data in Foxglove.' },
+    { name: 'ros2_medkit_clients', body: 'Call Medkit from your own Python or TypeScript code.' },
+  ];
+  const arrow = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>';
+  const check = '<svg fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>';
+  document.getElementById('rows').outerHTML = COMPANIONS.map((r) => `
+    <div class="wide row" data-asset="repo-${r.name}">
+      <div class="text"><h3>${r.name}</h3><p>${r.body}</p></div>
+      ${arrow}
+    </div>`).join('');
+  document.querySelectorAll('[data-checks] li').forEach((li) => li.insertAdjacentHTML('afterbegin', check));
+
+  const theme = new URLSearchParams(location.search).get('theme') || 'light';
+  document.documentElement.classList.add(theme);
+
+  // CSS backgrounds are not in document.images, so they are decoded here too
+  const backgrounds = ['images/values-leaves.webp'].map((src) => {
+    const img = new Image();
+    img.src = src;
+    return img;
+  });
+  // Fails the render when a face or an image is missing, so no asset ships
+  // with a fallback font or a hole where a drawing should be
+  window.ready = document.fonts.ready.then(async () => {
+    await Promise.all([...document.images, ...backgrounds].map((img) => img.decode().catch(() => null)));
+    const faces = ['700 46px Oxanium', '400 16px Inter', '600 16px Inter'];
+    const missingFaces = faces.filter((f) => ![...document.fonts].some((ff) => ff.status === 'loaded' && f.includes(ff.family)));
+    const missingImages = [...document.images, ...backgrounds].filter((img) => !img.naturalWidth).map((img) => img.src);
+    if (missingFaces.length || missingImages.length) {
+      throw new Error(`Not loaded: ${[...missingFaces, ...missingImages].join(', ')}`);
+    }
+    return true;
+  });
+</script>
+</body>
+</html>
