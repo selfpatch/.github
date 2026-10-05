@@ -1,9 +1,10 @@
 #!/usr/bin/env node
-// Renders every [data-asset] in assets.html to profile/assets/ with
-// headless Chrome over the DevTools protocol. No npm install needed: Node 22+
-// ships a WebSocket client.
+// Renders every [data-asset] in each sheet below with headless Chrome over
+// the DevTools protocol. No npm install needed: Node 22+ ships a WebSocket
+// client.
 //
-//   node profile/design/render.mjs
+//   node profile/design/render.mjs              every sheet
+//   node profile/design/render.mjs ros2_medkit  one sheet, by name
 //
 // CHROME=/path/to/chrome overrides the browser.
 
@@ -15,8 +16,15 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const page = pathToFileURL(join(here, 'assets.html')).href;
-const out = join(here, '..', 'assets');
+// assets.html draws the org profile; ros2_medkit.html the images the
+// ros2_medkit README links to, so that repository carries no binaries
+const SHEETS = [
+  { name: 'profile', page: 'assets.html', out: join(here, '..', 'assets') },
+  { name: 'ros2_medkit', page: 'ros2_medkit.html', out: join(here, '..', 'assets', 'ros2_medkit') },
+];
+const only = process.argv[2];
+const sheets = SHEETS.filter((sheet) => !only || sheet.name === only);
+if (!sheets.length) throw new Error(`No sheet named ${only}, try one of: ${SHEETS.map((sheet) => sheet.name).join(', ')}`);
 const SCALE = 2;
 const TIMEOUT_MS = 60_000;
 
@@ -108,32 +116,47 @@ try {
     return result.value;
   };
 
-  await mkdir(out, { recursive: true });
   const written = [];
-  for (const theme of ['light', 'dark']) {
-    const loaded = once('Page.loadEventFired', s);
-    await send('Page.navigate', { url: `${page}?theme=${theme}` }, s);
-    await loaded;
-    // Rejects when a font or an image did not load, so nothing renders with a fallback
-    await evaluate('window.ready');
+  for (const { page, out } of sheets) {
+    await mkdir(out, { recursive: true });
+    for (const theme of ['light', 'dark']) {
+      const loaded = once('Page.loadEventFired', s);
+      await send('Page.navigate', { url: `${pathToFileURL(join(here, page)).href}?theme=${theme}` }, s);
+      await loaded;
+      // Rejects when a font or an image did not load, so nothing renders with a fallback
+      await evaluate('window.ready');
 
-    const assets = await evaluate(`[...document.querySelectorAll('[data-asset]')].map((el) => {
-      const r = el.getBoundingClientRect();
-      return { name: el.dataset.asset, only: el.dataset.themes ?? null, format: el.dataset.format ?? 'png', x: r.x + scrollX, y: r.y + scrollY, width: r.width, height: r.height };
-    })`);
+      // Every asset to whole pixels, top to bottom, so a text-sized button keeps
+      // its right border and nothing below a fractional block lands between pixels
+      await evaluate(`document.querySelectorAll('[data-asset]').forEach((el) => {
+        const r = el.getBoundingClientRect();
+        el.style.width = Math.ceil(r.width) + 'px';
+        el.style.height = Math.ceil(r.height) + 'px';
+      }); true`);
 
-    for (const a of assets) {
-      // Theme-independent assets render once, from their own theme's pass
-      if (a.only && a.only !== theme) continue;
-      const file = a.only ? `${a.name}.${a.format}` : `${a.name}-${theme}.${a.format}`;
-      const { data } = await send('Page.captureScreenshot', {
-        format: a.format,
-        ...(a.format === 'webp' && { quality: 90 }),
-        captureBeyondViewport: true,
-        clip: { x: a.x, y: a.y, width: a.width, height: a.height, scale: 1 },
-      }, s);
-      await writeFile(join(out, file), Buffer.from(data, 'base64'));
-      written.push(`${file}  ${Math.round(a.width)}x${Math.round(a.height)}`);
+      const assets = await evaluate(`[...document.querySelectorAll('[data-asset]')].map((el) => {
+        const r = el.getBoundingClientRect();
+        return { name: el.dataset.asset, only: el.dataset.themes ?? null, format: el.dataset.format ?? 'png', x: r.x + scrollX, y: r.y + scrollY, width: r.width, height: r.height };
+      })`);
+
+      for (const a of assets) {
+        // Theme-independent assets render once, from their own theme's pass
+        if (a.only && a.only !== theme) continue;
+        const file = a.only ? `${a.name}.${a.format}` : `${a.name}-${theme}.${a.format}`;
+        // Snapped out to whole pixels, in case a box is still fractional
+        const x = Math.floor(a.x);
+        const y = Math.floor(a.y);
+        const width = Math.ceil(a.x + a.width) - x;
+        const height = Math.ceil(a.y + a.height) - y;
+        const { data } = await send('Page.captureScreenshot', {
+          format: a.format,
+          ...(a.format === 'webp' && { quality: 90 }),
+          captureBeyondViewport: true,
+          clip: { x, y, width, height, scale: 1 },
+        }, s);
+        await writeFile(join(out, file), Buffer.from(data, 'base64'));
+        written.push(`${join(out, file).slice(join(here, '..').length + 1)}  ${width}x${height}`);
+      }
     }
   }
   console.log(written.join('\n'));
