@@ -1,95 +1,30 @@
-# selfpatch
+<!-- Images are drawn from profile/design/assets.html in the selfpatch.ai brand. Run `node profile/design/render.mjs` after changing them. -->
 
-<p align="center">
-  <b>Self-healing diagnostics for ROS 2 and Physical AI.</b>
+<a href="https://selfpatch.ai"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.webp"><img src="assets/hero-light.webp" alt="Enabling robots to fix themselves. Robots at work: an underwater ROV, a drone and ground robots in a field, a robot arm on a factory line." width="100%"></picture></a>
+
+<p>
+<a href="https://github.com/selfpatch/ros2_medkit"><img src="assets/btn-try.png" alt="Try now" height="46"></a>&nbsp;
+<a href="https://selfpatch.github.io/ros2_medkit/"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/btn-docs-dark.png"><img src="assets/btn-docs-light.png" alt="Docs" height="46"></picture></a>&nbsp;
+<a href="https://discord.gg/6CXPMApAyq"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/btn-discord-dark.png"><img src="assets/btn-discord-light.png" alt="Discord" height="46"></picture></a>&nbsp;
+<a href="https://selfpatch.ai"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/btn-website-dark.png"><img src="assets/btn-website-light.png" alt="selfpatch.ai" height="46"></picture></a>
 </p>
 
-<p align="center">
-  <img src="https://github.com/selfpatch/ros2_medkit/raw/main/hero-full-720-12fps.gif" alt="Robots break. Now you'll know why." width="720">
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/loop-dark.png"><img src="assets/loop-light.png" alt="How it works: our self-healing loop. Diagnose: a robot breaks, it knows what broke and why. Patch: it picks a fix that worked before and installs it. Recover: a quick self-check, if something is off, the change is undone. Continue: every fix is remembered, so next time is even faster." width="100%"></picture>
+
+<a href="https://www.selfpatch.ai/security"><img src="assets/values.webp" alt="Our values: proof over promises. Apache 2.0: an open core you can inspect and trust. ISO 17978-3: built on the international SOVD standard. On the device: on-prem and air-gapped, no cloud required. Any stack: ROS 2 today, PLCs and ECUs through Pro bridges. NVIDIA Inception partner, official ROS 2 distribution, ROSCon 2026 main-track speaker." width="100%"></a>
+
+<a href="https://github.com/selfpatch/ros2_medkit"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/start-dark.png"><img src="assets/start-light.png" alt="Open core: start with open source. Medkit is free and open source. Put it on your first robots today, and move to Medkit Pro when you run a fleet. Step 1, open source: Medkit. Find out what broke on any ROS 2 robot, without SSH or one-off scripts. Finds every ROS 2 node by itself. Faults, live data and settings in one place. One standard API for every robot. Install free." width="100%"></picture></a>
+
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/works-with-dark.png"><img src="assets/works-with-light.png" alt="Works with Medkit. Free and open source, like Medkit." width="100%"></picture>
+
+<p>
+<a href="https://github.com/selfpatch/selfpatch_demos"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/repo-selfpatch_demos-dark.png"><img src="assets/repo-selfpatch_demos-light.png" alt="selfpatch_demos: Try Medkit on ready-made demo robots, from a mobile robot to a robot arm." width="100%"></picture></a>
+<a href="https://github.com/selfpatch/ros2_medkit_web_ui"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/repo-ros2_medkit_web_ui-dark.png"><img src="assets/repo-ros2_medkit_web_ui-light.png" alt="ros2_medkit_web_ui: See every part of your robot and its status in the browser." width="100%"></picture></a>
+<a href="https://github.com/selfpatch/ros2_medkit_mcp"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/repo-ros2_medkit_mcp-dark.png"><img src="assets/repo-ros2_medkit_mcp-light.png" alt="ros2_medkit_mcp: Let an AI assistant look into your robots through Medkit." width="100%"></picture></a>
+<a href="https://github.com/selfpatch/ros2_medkit_foxglove_extension"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/repo-ros2_medkit_foxglove_extension-dark.png"><img src="assets/repo-ros2_medkit_foxglove_extension-light.png" alt="ros2_medkit_foxglove_extension: See live faults next to your robot data in Foxglove." width="100%"></picture></a>
+<a href="https://github.com/selfpatch/ros2_medkit_clients"><picture><source media="(prefers-color-scheme: dark)" srcset="assets/repo-ros2_medkit_clients-dark.png"><img src="assets/repo-ros2_medkit_clients-light.png" alt="ros2_medkit_clients: Call Medkit from your own Python or TypeScript code." width="100%"></picture></a>
 </p>
 
-<p align="center">
-  📖 <a href="https://selfpatch.github.io/ros2_medkit/">Docs</a> · 💬 <a href="https://discord.gg/6CXPMApAyq">Discord</a>
-</p>
+<a href="https://www.selfpatch.ai/contact/medkit-pro?source=github.profile"><img src="assets/pro.webp" alt="Step 2, for fleets: Medkit Pro. Your whole fleet in one view. Faults come back with the fix. Suggests the fix that worked before. Updates that roll themselves back. Robots and PLCs in one place. Book a pilot. Runs on top of Medkit." width="100%"></a>
 
-selfpatch is the open-source core of a [SOVD](https://www.iso.org/standard/86384.html)-compliant diagnostics stack for robots and software-defined machines. A single REST gateway exposes the full ROS 2 graph - components, health, faults, parameters, operations, updates - in a shape that humans *and* AI agents can actually reason about.
-
-> **SOVD** = ISO 17978, the modern successor to UDS: HTTP/JSON, schema-first, AI-friendly. selfpatch makes it native to ROS 2.
-
----
-
-## Why selfpatch
-
-Diagnostics on modern robots and SDVs are fragmented, per-vendor, human-clickthrough - and mostly invisible to the AI agents operating the system. selfpatch changes that:
-
-- **One REST API** for the whole ROS 2 graph - no ad-hoc scripts per rig
-- **A machine-readable model** - AI agents can discover, explain, and act with justification
-- **Bridges over rewrites** - integrates with what your robots run today (ROS 2, SOVD, UDS, OPC UA, …)
-
----
-
-## Projects
-
-| Repository | What it is |
-|------------|------------|
-| [ros2_medkit](https://github.com/selfpatch/ros2_medkit) | C++17 SOVD gateway - the core REST server that fronts the ROS 2 graph |
-| [ros2_medkit_web_ui](https://github.com/selfpatch/ros2_medkit_web_ui) | React 19 entity browser with inline parameter and operation control |
-| [ros2_medkit_mcp](https://github.com/selfpatch/ros2_medkit_mcp) | Model Context Protocol server - 47 tools that let Claude, GPT & co. diagnose robots |
-| [ros2_medkit_foxglove_extension](https://github.com/selfpatch/ros2_medkit_foxglove_extension) | Foxglove Studio panels - entity browser and live fault dashboard |
-| [ros2_medkit_clients](https://github.com/selfpatch/ros2_medkit_clients) | Typed TypeScript and Python clients generated from the OpenAPI spec |
-| [selfpatch_demos](https://github.com/selfpatch/selfpatch_demos) | `docker compose up` demos with TurtleBot3 + Nav2 and a sensor-diagnostics rig |
-
----
-
-## Architecture
-
-```mermaid
-flowchart TB
-    subgraph clients["Clients"]
-        WebUI["ros2_medkit_web_ui<br/><sub>React SPA</sub>"]
-        MCP["ros2_medkit_mcp<br/><sub>MCP server for LLMs</sub>"]
-        Foxglove["foxglove_extension<br/><sub>Foxglove Studio panels</sub>"]
-        Libs["ros2_medkit_clients<br/><sub>TypeScript / Python libs</sub>"]
-    end
-
-    Gateway["ros2_medkit_gateway<br/><sub>C++ ROS 2 node</sub>"]
-
-    subgraph ros2["ROS 2 System"]
-        Nodes["nodes · topics · services<br/>actions · parameters · faults"]
-    end
-
-    WebUI -- "HTTP / REST" --> Gateway
-    MCP -- "HTTP / REST" --> Gateway
-    Foxglove -- "HTTP / REST" --> Gateway
-    Libs -. "typed SDK" .-> Gateway
-    Gateway -- "ROS 2 APIs" --> Nodes
-
-    classDef client fill:#eef3ff,stroke:#4a6bd8,color:#1a2a4a;
-    classDef gateway fill:#fff4e0,stroke:#d88a1a,color:#4a2a05,font-weight:bold;
-    classDef ros fill:#e9f7ee,stroke:#2a9d5d,color:#0d3a1d;
-    class WebUI,MCP,Foxglove,Libs client;
-    class Gateway gateway;
-    class Nodes ros;
-```
-
----
-
-## Who it's for
-
-- **Robotics teams on ROS 2** that need better remote diagnostics and observability
-- **SDV and mobility engineers** modernizing diagnostics without rewriting the stack
-- **AI/ML teams** building autonomous diagnostics and remediation with LLMs
-- **Platform teams** wiring up monitoring, OTA, and AI-driven operations
-
-If you've ever thought *"we can't safely automate fixes because we don't really understand what's running where"* - you're in the right place.
-
----
-
-## Get involved
-
-- **Try the 5-minute demo** → [`selfpatch_demos`](https://github.com/selfpatch/selfpatch_demos)
-- **Share a pain point** from your fleet in an [issue](https://github.com/selfpatch/ros2_medkit/issues) or on [Discord](https://discord.gg/6CXPMApAyq)
-- **Write a plugin** - the gateway and MCP server both expose plugin interfaces
-- **Star the repos you care about** - it helps us prioritize
-
-Apache 2.0. See individual repository `CONTRIBUTING.md` files for guidelines.
+<sub>Machines that heal themselves. Built to keep the world working.<br><a href="https://selfpatch.ai">selfpatch.ai</a> · <a href="https://selfpatch.github.io/ros2_medkit/">Docs</a> · <a href="https://discord.gg/6CXPMApAyq">Discord</a> · <a href="https://www.linkedin.com/company/self-patch">LinkedIn</a> · <a href="https://www.youtube.com/@SelfPatch-ai">YouTube</a></sub>
