@@ -1,0 +1,176 @@
+<!doctype html>
+<!--
+  The few images in the ros2_medkit README, drawn with the same brand system
+  as assets.html: Oxanium bold headings, Inter body, white cards on a chalk
+  panel. They live here, next to the org profile, so the ros2_medkit
+  repository does not carry binary assets; its README links to them on
+  raw.githubusercontent.com.
+
+  The README itself stays plain GitHub markdown, as engineers expect: badges
+  on top, real headings, commands as text. Only the logo, the header and the
+  how-it-works diagram are drawn.
+
+  render.mjs saves each [data-asset] here as
+  profile/assets/ros2_medkit/<name>-<theme>.png. The ros2_medkit README carries
+  the same words in each image's alt text, so change both.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ros2_medkit README assets</title>
+<style>
+  @font-face {
+    font-family: Oxanium;
+    font-weight: 200 800;
+    src: url("fonts/oxanium-latin.woff2") format("woff2");
+  }
+  @font-face {
+    font-family: Inter;
+    font-weight: 100 900;
+    src: url("fonts/inter-latin.woff2") format("woff2");
+  }
+
+  /* Light: the site's white ground. Dark: the site's dark act. */
+  :root {
+    --ink: #121413;
+    --body: #363a37;
+    --muted: #5d645e;
+    --accent-text: #2f6b3f;
+    --surface: #eeeeea;
+    --card: #ffffff;
+    --line: rgb(18 20 19 / 0.1);
+    --hero-ink: #0f3b24;
+  }
+  :root.dark {
+    --ink: #f4f5f1;
+    --body: #c9cdc4;
+    --muted: #a8b2a8;
+    --accent-text: #c8ff3e;
+    --surface: #1a1c1a;
+    --card: #242724;
+    --line: rgb(255 255 255 / 0.08);
+    --hero-ink: #f4f5f1;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: transparent; }
+  body {
+    font-family: Inter, system-ui, sans-serif;
+    color: var(--body);
+    -webkit-font-smoothing: antialiased;
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 40px;
+  }
+  h1, h4, .display {
+    font-family: Oxanium, system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+  h1 { letter-spacing: -0.04em; }
+
+  /* The README shows the wide assets at 100% */
+  .wide { width: 800px; }
+
+  /* Logo: the website's wordmark, graphite on light, white on dark */
+  .logo { display: flex; }
+  .logo img { height: 30px; width: auto; display: block; }
+  .logo .on-dark, .dark .logo .on-light { display: none; }
+  .dark .logo .on-dark { display: block; }
+
+  /* Header: the name and the claim beside the Medkit drawing */
+  .header { display: grid; grid-template-columns: 1fr 170px; gap: 32px; align-items: center; }
+  .header h1 { font-size: 64px; line-height: 1; color: var(--hero-ink); }
+  .header p { font-size: 22px; line-height: 1.4; color: var(--ink); margin-top: 14px; max-width: 30ch; }
+  .header img { display: block; width: 100%; height: auto; }
+
+  /* How it works: white cards on a chalk panel, as the website draws diagrams */
+  .panel { background: var(--surface); border-radius: 16px; padding: 28px; }
+  .flow { display: grid; grid-template-columns: 1fr 26px 1.5fr 26px 1fr; align-items: stretch; }
+  .flow .to { display: flex; justify-content: center; align-items: center; color: var(--muted); }
+  .flow .to svg { width: 18px; height: 18px; }
+  .card { background: var(--card); border-radius: 12px; padding: 20px 22px; }
+  .card .k { font-size: 14px; color: var(--muted); }
+  .card .name { font-size: 22px; line-height: 1.1; margin-top: 4px; }
+  .items { list-style: none; margin-top: 12px; }
+  .items li { font-size: 15.5px; line-height: 1.4; padding: 8px 0; border-top: 1px solid var(--line); color: var(--ink); }
+  .stages { list-style: none; margin-top: 12px; }
+  .stages li { padding: 10px 0; border-top: 1px solid var(--line); }
+  .stages h4 { font-size: 18px; line-height: 1.2; }
+  .stages p { font-size: 15px; line-height: 1.45; margin-top: 2px; }
+</style>
+</head>
+<body>
+
+<div class="logo" data-asset="logo">
+  <img class="on-light" src="images/wordmark-dark.svg" alt="">
+  <img class="on-dark" src="images/wordmark.svg" alt="">
+</div>
+
+<section class="wide header" data-asset="header">
+  <div>
+    <h1>ros2_medkit</h1>
+    <p>See what broke on any ROS 2 robot, from one REST API.</p>
+  </div>
+  <img src="images/medkit.webp" alt="">
+</section>
+
+<!-- Your robot, then what ros2_medkit does with it, then where you read it -->
+<div class="wide panel" data-asset="how-it-works">
+  <div class="flow">
+    <div class="card">
+      <p class="k">Your robot</p>
+      <ul class="items">
+        <li>Error logs</li>
+        <li>Failed actions</li>
+        <li>/diagnostics</li>
+        <li>Your own nodes, through FaultReporter</li>
+      </ul>
+    </div>
+    <div class="to" data-arrow></div>
+    <div class="card">
+      <p class="k">ros2_medkit</p>
+      <ol class="stages">
+        <li><h4>Listens</h4><p>to logs, actions and diagnostics</p></li>
+        <li><h4>Records</h4><p>each fault, with its history, a snapshot and a rosbag</p></li>
+        <li><h4>Serves</h4><p>it all on one REST API, with every node it found</p></li>
+      </ol>
+    </div>
+    <div class="to" data-arrow></div>
+    <div class="card">
+      <p class="k">You</p>
+      <ul class="items">
+        <li>Browser</li>
+        <li>curl</li>
+        <li>Web UI</li>
+        <li>AI assistant</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<script>
+  const arrow = '<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>';
+  document.querySelectorAll('[data-arrow]').forEach((el) => { el.innerHTML = arrow; });
+
+  const theme = new URLSearchParams(location.search).get('theme') || 'light';
+  document.documentElement.classList.add(theme);
+
+  // Fails the render when a face or an image is missing, so no asset ships
+  // with a fallback font or a hole where a drawing should be
+  window.ready = document.fonts.ready.then(async () => {
+    await Promise.all([...document.images].map((img) => img.decode().catch(() => null)));
+    const loaded = [...document.fonts].filter((ff) => ff.status === 'loaded').map((ff) => ff.family);
+    const missingFaces = ['Oxanium', 'Inter'].filter((f) => !loaded.includes(f));
+    const missingImages = [...document.images].filter((img) => !img.naturalWidth).map((img) => img.src);
+    if (missingFaces.length || missingImages.length) {
+      throw new Error(`Not loaded: ${[...missingFaces, ...missingImages].join(', ')}`);
+    }
+    return true;
+  });
+</script>
+</body>
+</html>
